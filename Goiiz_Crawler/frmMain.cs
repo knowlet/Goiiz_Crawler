@@ -19,7 +19,7 @@ namespace Goiiz_Crawler
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("a");
+            
         }
     }
 }
