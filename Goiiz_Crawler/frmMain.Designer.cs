@@ -53,10 +53,12 @@
             // 
             // txtShow
             // 
+            this.txtShow.BackColor = System.Drawing.SystemColors.Window;
             this.txtShow.Location = new System.Drawing.Point(12, 42);
             this.txtShow.Multiline = true;
             this.txtShow.Name = "txtShow";
             this.txtShow.ReadOnly = true;
+            this.txtShow.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtShow.Size = new System.Drawing.Size(260, 208);
             this.txtShow.TabIndex = 2;
             // 

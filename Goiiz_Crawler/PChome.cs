@@ -15,8 +15,10 @@ namespace Goiiz_Crawler
         private SpWebClient spwc;
         private string id;
         private string itemList;
+        private List<string> itemUrls;
         public int pageNum;
         public int itemNum;
+        public string status;
 
         public PChome(string id)
         {
@@ -25,8 +27,8 @@ namespace Goiiz_Crawler
             this.spwc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
             this.id = id;
             this.itemList = String.Format("http://www.pcstore.com.tw/{0}/HM/search.htm", id);
-            Console.WriteLine(itemList);
             this.cc.Add(new Cookie("pagecountBycookie", "40") { Domain = ".www.pcstore.com.tw" });
+            this.itemUrls = new List<string>();
         }
 
         public bool Init()
@@ -46,6 +48,31 @@ namespace Goiiz_Crawler
             }
         }
 
+        public List<string> getItemUrlsList()
+        {
+            for (int i = 1; i <= this.pageNum; ++i)
+            {
+                CQ dom = spwc.DownloadString(this.itemList + "?st_sort=2&s_page=" + i.ToString());
+                CQ proHrefs = dom.Select(".list_proName>a");
+                proHrefs.Each((idx, a) => {
+                    this.itemUrls.Add(a["href"]);
+                });
+                Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
+                if (i == 11)
+                {
+                    Console.WriteLine(dom);
+                }
+                // Task.Delay(1000);
+                System.Threading.Thread.Sleep(1200);
+                if (i % 10 == 0)
+                {
+                    Console.WriteLine("wait");
+                    System.Threading.Thread.Sleep(3200);
+                }
+            }
+            return itemUrls;
+        }
+
         public bool getSinglePage(string url)
         {
             CQ dom = spwc.DownloadString(url);
@@ -63,9 +90,11 @@ namespace Goiiz_Crawler
             });
             string pic = dom.Select("img[name='b_img_t']")[0]["src"];
             string path = dom.Select(".topbar_bg+tr>td[height]").Text().Trim().Replace("!\\s+!", String.Empty);
-            Console.WriteLine("{0},\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,{7} ,{8} ,,,,,case1,case2,{9}", title, description, preferPrice, orgPrice,
-                content, contentPic[0], contentPic[1], contentPic[2], pic, path);
+            Console.WriteLine("{0},\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,case1,case2,{7}", title, description, preferPrice, orgPrice,
+                content, string.Join(" ,", contentPic), pic, path);
             return true;
         }
+
+
     }
 }

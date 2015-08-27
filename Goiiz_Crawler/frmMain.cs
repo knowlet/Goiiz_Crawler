@@ -17,7 +17,12 @@ namespace Goiiz_Crawler
         {
             InitializeComponent();
         }
-        
+
+        public static void wait(int sec)
+        {
+
+        }
+
         private void btnStart_Click(object sender, EventArgs e)
         {
             string url = txtUrl.Text;
@@ -26,13 +31,17 @@ namespace Goiiz_Crawler
             Regex regYahooMall = new Regex(@"^https?://tw\.mall\.yahoo\.com/store/(\w+)");
             if (regPCStore.IsMatch(url))
             {
-                Console.WriteLine(regPCStore.Match(url).Value);
                 PChome bot = new PChome(regPCStore.Match(url).Groups[1].Value);
-                txtShow.AppendText("初始化 PChome 商店街爬蟲機器人.. ");
+                txtShow.AppendText("初始化 PCstore 爬蟲機器人.. ");
                 if (bot.Init())
                 {
                     txtShow.AppendText("初始化完成!\n");
                     txtShow.AppendText(String.Format("找到 {0} 個產品，共 {1} 頁\n", bot.itemNum, bot.pageNum));
+                    List<string> urls = bot.getItemUrlsList();
+                    foreach (string u in urls)
+                    {
+                        txtShow.AppendText(u + Environment.NewLine);
+                    }
                 }
                 else
                 {
