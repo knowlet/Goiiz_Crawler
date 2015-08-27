@@ -39,6 +39,7 @@
             this.txtUrl.Name = "txtUrl";
             this.txtUrl.Size = new System.Drawing.Size(179, 22);
             this.txtUrl.TabIndex = 0;
+            this.txtUrl.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUrl_KeyDown);
             // 
             // btnStart
             // 
@@ -46,7 +47,7 @@
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 1;
-            this.btnStart.Text = "button1";
+            this.btnStart.Text = "開始";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
@@ -55,6 +56,7 @@
             this.txtShow.Location = new System.Drawing.Point(12, 42);
             this.txtShow.Multiline = true;
             this.txtShow.Name = "txtShow";
+            this.txtShow.ReadOnly = true;
             this.txtShow.Size = new System.Drawing.Size(260, 208);
             this.txtShow.TabIndex = 2;
             // 
