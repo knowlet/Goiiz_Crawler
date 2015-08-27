@@ -1,6 +1,7 @@
 ﻿using CsQuery;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -28,6 +29,7 @@ namespace Goiiz_Crawler
             this.id = id;
             this.itemList = String.Format("http://www.pcstore.com.tw/{0}/HM/search.htm", id);
             this.cc.Add(new Cookie("pagecountBycookie", "40") { Domain = ".www.pcstore.com.tw" });
+            this.cc.Add(new Cookie("brwsckidsn", "KNOWLET_MAGIC") { Domain = ".pcstore.com.tw" });
             this.itemUrls = new List<string>();
         }
 
@@ -58,26 +60,15 @@ namespace Goiiz_Crawler
                     this.itemUrls.Add(a["href"]);
                 });
                 Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
-                if (i == 11)
-                {
-                    Console.WriteLine(dom);
-                }
-                // Task.Delay(1000);
-                System.Threading.Thread.Sleep(1200);
-                if (i % 10 == 0)
-                {
-                    Console.WriteLine("wait");
-                    System.Threading.Thread.Sleep(3200);
-                }
             }
             return itemUrls;
         }
 
-        public bool getSinglePage(string url)
+        public string getSinglePage(string url)
         {
             CQ dom = spwc.DownloadString(url);
             string title = dom.Select("h1").Text().Trim();
-            string description = dom.Select(".sinfo").Text().Trim().Trim();
+            string description = dom.Select(".sinfo").Text().Trim();
             int preferPrice = Int32.Parse(dom.Select("td>b+span").First().Text());
             string orgPriceStr = dom.Select(".t13t").First().Text().Replace(Convert.ToChar(36), Convert.ToChar(32)).Trim();
             int orgPrice = orgPriceStr == "" ? preferPrice : Int32.Parse(orgPriceStr);
@@ -89,10 +80,9 @@ namespace Goiiz_Crawler
                     contentPic[i] = e["src"];
             });
             string pic = dom.Select("img[name='b_img_t']")[0]["src"];
-            string path = dom.Select(".topbar_bg+tr>td[height]").Text().Trim().Replace("!\\s+!", String.Empty);
-            Console.WriteLine("{0},\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,case1,case2,{7}", title, description, preferPrice, orgPrice,
-                content, string.Join(" ,", contentPic), pic, path);
-            return true;
+            string path = Regex.Replace(dom.Select(".topbar_bg+tr>td[height]").Text(), @"\s+", String.Empty);
+            return String.Format("{0},\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,case1,case2,{7}", title, description, preferPrice, orgPrice,
+                content, string.Join(" ,", contentPic), pic, path) + Environment.NewLine;
         }
 
 
