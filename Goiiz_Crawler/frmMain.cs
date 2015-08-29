@@ -41,7 +41,7 @@ namespace Goiiz_Crawler
                     foreach (string u in urls)
                     {
                         // txtShow.AppendText(u + Environment.NewLine);
-                        File.AppendAllText(path, bot.getSinglePage(regPCStore.Match(url).Value + u), Encoding.Unicode);
+                        File.AppendAllText(path, bot.getSinglePage(regPCStore.Match(url).Value + u), Encoding.UTF8);
                     }
                     txtShow.AppendText("完成!");
                 }
