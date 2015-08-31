@@ -19,7 +19,6 @@ namespace Goiiz_Crawler
         private List<string> itemUrls;
         public int pageNum;
         public int itemNum;
-        public string status;
 
         public PChome(string id)
         {

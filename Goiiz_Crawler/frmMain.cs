@@ -52,6 +52,7 @@ namespace Goiiz_Crawler
             }
             else if (regRakuten.IsMatch(url))
             {
+                string id = regRakuten.Match(url).Groups[1].Value;
                 Rakuten bot = new Rakuten(regRakuten.Match(url).Groups[1].Value);
                 txtShow.AppendText("初始化R天爬蟲機器人.. ");
                 if (bot.Init())
