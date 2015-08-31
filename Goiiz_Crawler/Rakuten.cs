@@ -1,7 +1,6 @@
 ﻿using CsQuery;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Goiiz_Crawler
 {
-    class PChome
+    class Rakuten
     {
         private CookieContainer cc;
         private SpWebClient spwc;
@@ -18,30 +17,26 @@ namespace Goiiz_Crawler
         private string listUrl;
         private List<string> itemUrls;
         public int pageNum;
-        public int itemNum;
-        public string status;
-
-        public PChome(string id)
+        public double itemNum;
+        
+        public Rakuten(string id)
         {
             this.cc = new CookieContainer();
             this.spwc = new SpWebClient(cc);
             this.spwc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
             this.id = id;
-            this.listUrl = String.Format("http://www.pcstore.com.tw/{0}/HM/search.htm", id);
-            this.cc.Add(new Cookie("pagecountBycookie", "40") { Domain = ".www.pcstore.com.tw" });
-            this.cc.Add(new Cookie("brwsckidsn", "KNOWLET_MAGIC") { Domain = ".pcstore.com.tw" });
+            this.listUrl = String.Format("http://www.rakuten.com.tw/shop/{0}/products/", id);
             this.itemUrls = new List<string>();
         }
 
         public bool Init()
         {
-            Regex regPageNum = new Regex(@"共 ([0-9]+) 頁");
+            Regex regPageNum = new Regex(@"共 ([0-9]+) 筆結果");
             CQ dom = spwc.DownloadString(listUrl);
             try
             {
-                string pages = regPageNum.Match(dom.Select(".t11:first").Text()).Groups[1].Value;
-                this.pageNum = Int32.Parse(pages);
-                this.itemNum = Int32.Parse(dom.Select("#inside_content td>font>strong").Text().Trim());
+                this.itemNum = Double.Parse(regPageNum.Match(dom.Select(".b-tabs-utility").Text()).Groups[1].Value);
+                this.pageNum = Int32.Parse(Math.Ceiling(itemNum / 60).ToString());
                 return true;
             }
             catch (Exception)
@@ -54,8 +49,8 @@ namespace Goiiz_Crawler
         {
             for (int i = 1; i <= this.pageNum; ++i)
             {
-                CQ dom = spwc.DownloadString(this.listUrl + "?st_sort=2&s_page=" + i.ToString());
-                CQ proHrefs = dom.Select(".list_proName>a");
+                CQ dom = spwc.DownloadString(this.listUrl + "?h=3&v=l&p=" + i.ToString());
+                CQ proHrefs = dom.Select(".b-item .b-text b>a");
                 proHrefs.Each((idx, a) => {
                     this.itemUrls.Add(a["href"]);
                 });
@@ -75,7 +70,7 @@ namespace Goiiz_Crawler
             string content = dom.Select("tr[style^='FONT']").First().Text().Trim();
             if (content.Length > 500) content = content.Substring(0, 500);
             string[] contentPic = new string[3];
-            dom.Select("tr[style^='FONT'] img").Each((i,e) => {
+            dom.Select("tr[style^='FONT'] img").Each((i, e) => {
                 if (i < 3)
                     contentPic[i] = e["src"];
             });
@@ -84,7 +79,6 @@ namespace Goiiz_Crawler
             return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,case1,case2,{7}", title, description, preferPrice, orgPrice,
                 content, string.Join(" ,", contentPic), pic, path) + Environment.NewLine;
         }
-
 
     }
 }
