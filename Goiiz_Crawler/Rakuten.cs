@@ -32,11 +32,12 @@ namespace Goiiz_Crawler
         public bool Init()
         {
             Regex regPageNum = new Regex(@"共 ([0-9]+) 筆結果");
-            CQ dom = spwc.DownloadString(listUrl);
+            CQ dom = spwc.DownloadString(listUrl, Encoding.UTF8);
             try
             {
-                this.itemNum = Double.Parse(regPageNum.Match(dom.Select(".b-tabs-utility").Text()).Groups[1].Value);
-                this.pageNum = Int32.Parse(Math.Ceiling(itemNum / 60).ToString());
+            string item = dom.Select(".b-tabs-utility").Text();
+            this.itemNum = Double.Parse(regPageNum.Match(item).Groups[1].Value);
+            this.pageNum = Int32.Parse(Math.Ceiling(itemNum / 60).ToString());
                 return true;
             }
             catch (Exception)
@@ -49,7 +50,7 @@ namespace Goiiz_Crawler
         {
             for (int i = 1; i <= this.pageNum; ++i)
             {
-                CQ dom = spwc.DownloadString(this.listUrl + "?h=3&v=l&p=" + i.ToString());
+                CQ dom = spwc.DownloadString(this.listUrl + "?h=3&v=l&p=" + i.ToString(), Encoding.UTF8);
                 CQ proHrefs = dom.Select(".b-item .b-text b>a");
                 proHrefs.Each((idx, a) => {
                     this.itemUrls.Add(a["href"]);
@@ -61,23 +62,37 @@ namespace Goiiz_Crawler
 
         public string getSinglePage(string url)
         {
-            CQ dom = spwc.DownloadString(url);
+            CQ dom = spwc.DownloadString(url, Encoding.UTF8);
             string title = dom.Select("h1").Text().Trim();
-            string description = dom.Select(".sinfo").Text().Trim();
-            int preferPrice = Int32.Parse(dom.Select("td>b+span").First().Text());
-            string orgPriceStr = dom.Select(".t13t").First().Text().Replace(Convert.ToChar(36), Convert.ToChar(32)).Trim();
-            int orgPrice = orgPriceStr == "" ? preferPrice : Int32.Parse(orgPriceStr);
-            string content = dom.Select("tr[style^='FONT']").First().Text().Trim();
+            string description = "";    // dom.Select(".prd-description").Text().Trim();
+            int preferPrice = Int32.Parse(dom.Select("span.qa-product-actualPrice").Text());
+            Regex regListPrice = new Regex(@"prod_list_price': (\w+)");
+            string dataLayer = dom.Select("script[type]:not([src]):first").Text();
+            string orgPriceStr = regListPrice.Match(dataLayer).Groups[1].Value;
+            int orgPrice = orgPriceStr == "null" ? preferPrice : Int32.Parse(orgPriceStr);
+            string content = dom.Select(".prd-description").Text().Trim();
             if (content.Length > 500) content = content.Substring(0, 500);
             string[] contentPic = new string[3];
-            dom.Select("tr[style^='FONT'] img").Each((i, e) => {
+            dom.Select(".prd-description img").Each((i, e) => {
                 if (i < 3)
                     contentPic[i] = e["src"];
             });
-            string pic = dom.Select("img[name='b_img_t']")[0]["src"];
+            string[] pic = new String[5];
+            CQ itemThumnails = dom.Select(".item-thumnails img");
+            if (itemThumnails.Length > 0)
+            {
+                itemThumnails.Each((i, e) => {
+                    if (i < 5)
+                        pic[i] = e["src"];
+                });
+            }
+            else
+            {
+                pic[0] = dom.Select("img[itemprop]")[0]["src"].Split('?')[0];
+            }
             string path = Regex.Replace(dom.Select(".topbar_bg+tr>td[height]").Text(), @"\s+", String.Empty);
-            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,case1,case2,{7}", title, description, preferPrice, orgPrice,
-                content, string.Join(" ,", contentPic), pic, path) + Environment.NewLine;
+            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,case1,case2,{7}", title, description, preferPrice, orgPrice,
+                content, string.Join(" ,", contentPic), string.Join(" ,", pic), path) + Environment.NewLine;
         }
 
     }
