@@ -37,7 +37,7 @@ namespace Goiiz_Crawler
             {
             string item = dom.Select(".b-tabs-utility").Text();
             this.itemNum = Double.Parse(regPageNum.Match(item).Groups[1].Value);
-            this.pageNum = Int32.Parse(Math.Ceiling(itemNum / 60).ToString());
+            this.pageNum = Convert.ToInt32(Math.Ceiling(itemNum / 60));
                 return true;
             }
             catch (Exception)
@@ -65,12 +65,12 @@ namespace Goiiz_Crawler
             CQ dom = spwc.DownloadString(url, Encoding.UTF8);
             string title = dom.Select("h1").Text().Trim();
             string description = "";    // dom.Select(".prd-description").Text().Trim();
-            int preferPrice = Int32.Parse(dom.Select("span.qa-product-actualPrice").Text());
+            int preferPrice = Int32.Parse(dom.Select("span.qa-product-actualPrice").Text().Trim().Replace(",", String.Empty));
             Regex regListPrice = new Regex(@"prod_list_price': (\w+)");
             string dataLayer = dom.Select("script[type]:not([src]):first").Text();
-            string orgPriceStr = regListPrice.Match(dataLayer).Groups[1].Value;
+            string orgPriceStr = regListPrice.Match(dataLayer).Groups[1].Value.Trim().Replace(",", String.Empty);
             int orgPrice = orgPriceStr == "null" ? preferPrice : Int32.Parse(orgPriceStr);
-            string content = dom.Select(".prd-description").Text().Trim();
+            string content = dom.Select(".prd-description").Text().Trim().Replace("\"", "\"\"");
             if (content.Length > 500) content = content.Substring(0, 500);
             string[] contentPic = new string[3];
             dom.Select(".prd-description img").Each((i, e) => {
@@ -83,14 +83,14 @@ namespace Goiiz_Crawler
             {
                 itemThumnails.Each((i, e) => {
                     if (i < 5)
-                        pic[i] = e["src"];
+                        pic[i] = e["data-frz-src"];
                 });
             }
             else
             {
-                pic[0] = dom.Select("img[itemprop]")[0]["src"].Split('?')[0];
+                pic[0] = dom.Select("img[itemprop]")[0]["data-frz-src"].Split('?')[0];
             }
-            string path = Regex.Replace(dom.Select(".topbar_bg+tr>td[height]").Text(), @"\s+", String.Empty);
+            string path = "";
             return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,case1,case2,{7}", title, description, preferPrice, orgPrice,
                 content, string.Join(" ,", contentPic), string.Join(" ,", pic), path) + Environment.NewLine;
         }

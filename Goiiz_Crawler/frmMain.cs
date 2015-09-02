@@ -25,6 +25,7 @@ namespace Goiiz_Crawler
             Regex regPCStore = new Regex(@"^https?://www\.pcstore\.com\.tw/(\w+)");
             Regex regRakuten = new Regex(@"^https?://www\.rakuten\.com\.tw/shop/(\w+)");
             Regex regYahooMall = new Regex(@"^https?://tw\.mall\.yahoo\.com/store/(\w+)");
+            pgbShow.Value = 0;
             if (regPCStore.IsMatch(url))
             {
                 string id = regPCStore.Match(url).Groups[1].Value;
@@ -35,13 +36,16 @@ namespace Goiiz_Crawler
                     txtShow.AppendText("初始化完成!\n");
                     txtShow.AppendText(String.Format("找到 {0} 個產品，共 {1} 頁\n", bot.itemNum, bot.pageNum));
                     List<string> urls = bot.getItemUrlsList();
-                    txtShow.AppendText("物品清單下載完成，開始下在物品資料");
+                    txtShow.AppendText("物品清單下載完成，開始下載物品資料");
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\" + id + ".csv";
                     File.Delete(path);
+                    pgbShow.Maximum = bot.itemNum;
+                    pgbShow.Minimum = 0;
                     foreach (string u in urls)
                     {
                         // txtShow.AppendText(u + Environment.NewLine);
                         File.AppendAllText(path, bot.getSinglePage(regPCStore.Match(url).Value + u), Encoding.UTF8);
+                        ++pgbShow.Value;
                     }
                     txtShow.AppendText("完成!");
                 }
@@ -59,15 +63,18 @@ namespace Goiiz_Crawler
                 {
                     txtShow.AppendText("初始化完成!\n");
                     txtShow.AppendText(String.Format("找到 {0} 個產品，共 {1} 頁\n", bot.itemNum, bot.pageNum));
-                    // txtShow.AppendText(bot.getSinglePage("http://www.rakuten.com.tw/shop/psmall/product/100000009124190/?l-id=tw_search_product_1"));
+                    // txtShow.AppendText(bot.getSinglePage("http://www.rakuten.com.tw/shop/pcgoex/product/100000010481842/?l-id=tw_search_product_1"));
                     List<string> urls = bot.getItemUrlsList();
-                    txtShow.AppendText("物品清單下載完成，開始下在物品資料");
+                    txtShow.AppendText("物品清單下載完成，開始載在物品資料");
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\" + id + ".csv";
                     File.Delete(path);
+                    pgbShow.Maximum = Convert.ToInt32(bot.itemNum);
+                    pgbShow.Minimum = 0;
                     foreach (string u in urls)
                     {
                         // txtShow.AppendText(u + Environment.NewLine);
-                        File.AppendAllText(path, bot.getSinglePage(regPCStore.Match(url).Value + u), Encoding.UTF8);
+                        File.AppendAllText(path, bot.getSinglePage("http://www.rakuten.com.tw" + u), Encoding.UTF8);
+                        ++pgbShow.Value;
                     }
                     txtShow.AppendText("完成!");
                 }

@@ -67,11 +67,11 @@ namespace Goiiz_Crawler
         {
             CQ dom = spwc.DownloadString(url);
             string title = dom.Select("h1").Text().Trim();
-            string description = dom.Select(".sinfo").Text().Trim();
+            string description = dom.Select(".sinfo").Text().Trim().Replace("\"", "\"\""); ;
             int preferPrice = Int32.Parse(dom.Select("td>b+span").First().Text());
             string orgPriceStr = dom.Select(".t13t").First().Text().Replace(Convert.ToChar(36), Convert.ToChar(32)).Trim();
             int orgPrice = orgPriceStr == "" ? preferPrice : Int32.Parse(orgPriceStr);
-            string content = dom.Select("tr[style^='FONT']").First().Text().Trim();
+            string content = dom.Select("tr[style^='FONT']").First().Text().Trim().Replace("\"", "\"\""); ;
             if (content.Length > 500) content = content.Substring(0, 500);
             string[] contentPic = new string[3];
             dom.Select("tr[style^='FONT'] img").Each((i,e) => {

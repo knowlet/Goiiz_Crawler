@@ -31,6 +31,7 @@
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.btnStart = new System.Windows.Forms.Button();
             this.txtShow = new System.Windows.Forms.TextBox();
+            this.pgbShow = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // txtUrl
@@ -68,11 +69,21 @@
             this.txtShow.Size = new System.Drawing.Size(260, 208);
             this.txtShow.TabIndex = 2;
             // 
+            // pgbShow
+            // 
+            this.pgbShow.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pgbShow.Location = new System.Drawing.Point(12, 256);
+            this.pgbShow.Name = "pgbShow";
+            this.pgbShow.Size = new System.Drawing.Size(260, 23);
+            this.pgbShow.TabIndex = 3;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(284, 291);
+            this.Controls.Add(this.pgbShow);
             this.Controls.Add(this.txtShow);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.txtUrl);
@@ -88,6 +99,7 @@
         private System.Windows.Forms.TextBox txtUrl;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.TextBox txtShow;
+        private System.Windows.Forms.ProgressBar pgbShow;
     }
 }
 
