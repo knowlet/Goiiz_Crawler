@@ -16,8 +16,7 @@ namespace Goiiz_Crawler
         private string id;
         private string listUrl;
         private List<string> itemUrls;
-        public int pageNum;
-        public double itemNum;
+        public int itemNum;
 
         public Yahoo(string id)
         {
@@ -35,8 +34,7 @@ namespace Goiiz_Crawler
             try
             {
                 string item = dom.Select("p>strong").Text();
-                this.itemNum = Double.Parse(item);
-                this.pageNum = Convert.ToInt32(Math.Ceiling(itemNum / 48));
+                this.itemNum = Int32.Parse(item);
                 return true;
             }
             catch (Exception)
@@ -47,9 +45,9 @@ namespace Goiiz_Crawler
 
         public List<string> getItemUrlsList()
         {
-            for (int i = 0; i <= this.pageNum; i += 48)
+            for (int i = 0; i <= this.itemNum; i += 48)
             {
-                CQ dom = spwc.DownloadString(this.listUrl + "&b=30000" + i.ToString(), Encoding.UTF8);
+                CQ dom = spwc.DownloadString(this.listUrl + "&b=" + i.ToString(), Encoding.UTF8);
                 // 超過三萬件商品可能會有空白資料的情況
                 if (i > 29952 && dom.Select("p>strong").Text().Trim() == "0") break;
                 CQ proHrefs = dom.Select("td.title>a");

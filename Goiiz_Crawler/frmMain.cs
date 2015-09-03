@@ -36,7 +36,7 @@ namespace Goiiz_Crawler
                     txtShow.AppendText("初始化完成!\n");
                     txtShow.AppendText(String.Format("找到 {0} 個產品，共 {1} 頁\n", bot.itemNum, bot.pageNum));
                     List<string> urls = bot.getItemUrlsList();
-                    txtShow.AppendText("物品清單下載完成，開始下載物品資料");
+                    txtShow.AppendText("物品清單下載完成，開始取得物品資料");
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\" + id + ".csv";
                     File.Delete(path);
                     pgbShow.Maximum = bot.itemNum;
@@ -65,7 +65,7 @@ namespace Goiiz_Crawler
                     txtShow.AppendText(String.Format("找到 {0} 個產品，共 {1} 頁\n", bot.itemNum, bot.pageNum));
                     // txtShow.AppendText(bot.getSinglePage("http://www.rakuten.com.tw/shop/pcgoex/product/100000010481842/?l-id=tw_search_product_1"));
                     List<string> urls = bot.getItemUrlsList();
-                    txtShow.AppendText("物品清單下載完成，開始載在物品資料");
+                    txtShow.AppendText("物品清單下載完成，開始取得物品資料");
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\" + id + ".csv";
                     File.Delete(path);
                     pgbShow.Maximum = Convert.ToInt32(bot.itemNum);
@@ -91,10 +91,10 @@ namespace Goiiz_Crawler
                 if (bot.Init())
                 {
                     txtShow.AppendText("初始化完成!\n");
-                    txtShow.AppendText(String.Format("找到 {0} 個產品，共 {1} 頁\n", bot.itemNum, bot.pageNum));
-                    txtShow.AppendText(bot.getSinglePage("https://tw.mall.yahoo.com/item/%E7%91%B0%E7%8F%80%E7%BF%A0-2015-%E5%8E%9F%E5%BB%A0%E8%AD%B7%E6%89%8B%E9%9C%9C%E4%B8%89%E5%85%A5%E7%A6%AE%E7%9B%92-p034075665212"));
-                    /*List<string> urls = bot.getItemUrlsList();
-                    txtShow.AppendText("物品清單下載完成，開始載在物品資料");
+                    txtShow.AppendText(String.Format("找到 {0} 個產品\n", bot.itemNum));
+                    // txtShow.AppendText(bot.getSinglePage("https://tw.mall.yahoo.com/item/%E7%91%B0%E7%8F%80%E7%BF%A0-2015-%E5%8E%9F%E5%BB%A0%E8%AD%B7%E6%89%8B%E9%9C%9C%E4%B8%89%E5%85%A5%E7%A6%AE%E7%9B%92-p034075665212"));
+                    List<string> urls = bot.getItemUrlsList();
+                    txtShow.AppendText("物品清單下載完成，開始取得物品資料");
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\" + id + ".csv";
                     File.Delete(path);
                     pgbShow.Maximum = Convert.ToInt32(bot.itemNum);
@@ -102,10 +102,10 @@ namespace Goiiz_Crawler
                     foreach (string u in urls)
                     {
                         // txtShow.AppendText(u + Environment.NewLine);
-                        File.AppendAllText(path, bot.getSinglePage("http://www.rakuten.com.tw" + u), Encoding.UTF8);
+                        File.AppendAllText(path, bot.getSinglePage(u), Encoding.UTF8);
                         ++pgbShow.Value;
                     }
-                    txtShow.AppendText("完成!");*/
+                    txtShow.AppendText("完成!");
                 }
                 else
                 {
