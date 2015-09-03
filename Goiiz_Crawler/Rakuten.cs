@@ -90,7 +90,7 @@ namespace Goiiz_Crawler
             {
                 pic[0] = dom.Select("img[itemprop]")[0]["data-frz-src"].Split('?')[0];
             }
-            string path = "";
+            string path = dom.Select(".related-categories>ul").Text().Trim();
             return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,case1,case2,{7}", title, description, preferPrice, orgPrice,
                 content, string.Join(" ,", contentPic), string.Join(" ,", pic), path) + Environment.NewLine;
         }
