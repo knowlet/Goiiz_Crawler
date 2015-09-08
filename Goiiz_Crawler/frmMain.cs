@@ -13,7 +13,7 @@ namespace Goiiz_Crawler
 {
     public partial class frmMain : Form
     {
-        string PATH = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Documents\\";
+        string PATH = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Documents\\Goiiz\\";
         Regex regPCStore = new Regex(@"^https?://www\.pcstore\.com\.tw/(\w+)");
         Regex regRakuten = new Regex(@"^https?://www\.rakuten\.com\.tw/shop/(\w+)");
         Regex regYahooMall = new Regex(@"^https?://tw\.mall\.yahoo\.com/store/(\w+)");
@@ -21,6 +21,7 @@ namespace Goiiz_Crawler
         public frmMain()
         {
             InitializeComponent();
+            Directory.CreateDirectory(PATH);
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -45,6 +46,7 @@ namespace Goiiz_Crawler
                     foreach (string u in urls)
                     {
                         // txtShow.AppendText(u + Environment.NewLine);
+                        Application.DoEvents();
                         File.AppendAllText(path, bot.getSinglePage(regPCStore.Match(url).Value + u), Encoding.UTF8);
                         ++pgbShow.Value;
                     }
@@ -115,7 +117,7 @@ namespace Goiiz_Crawler
             }
             else
             {
-                MessageBox.Show("請確認輸入的網址是否有效！");
+                MessageBox.Show("請確認輸入的網址是否位於商家首頁！");
             }
         }
 
