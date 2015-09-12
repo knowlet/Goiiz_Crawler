@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Goiiz_Crawler
@@ -56,6 +57,8 @@ namespace Goiiz_Crawler
                     this.itemUrls.Add(a["href"]);
                 });
                 Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
+                Thread.Sleep(1000);
+                Console.WriteLine("Wait 1 sec.");
             }
             return itemUrls;
         }
