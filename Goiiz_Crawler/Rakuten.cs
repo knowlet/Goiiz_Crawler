@@ -68,7 +68,7 @@ namespace Goiiz_Crawler
             CQ dom = spwc.DownloadString(url, Encoding.UTF8);
             string title = dom.Select("h1").Text().Trim();
             string description = "";    // dom.Select(".prd-description").Text().Trim();
-            int preferPrice = Int32.Parse(dom.Select("span.qa-product-actualPrice").Text().Trim().Replace(",", String.Empty));
+            int preferPrice = Int32.Parse(dom.Select("span.qa-product-actualPrice").Text().Split('-')[0].Trim().Replace(",", String.Empty));
             Regex regListPrice = new Regex(@"prod_list_price': (\w+)");
             string dataLayer = dom.Select("script[type]:not([src]):first").Text();
             string orgPriceStr = regListPrice.Match(dataLayer).Groups[1].Value.Trim().Replace(",", String.Empty);
@@ -93,7 +93,7 @@ namespace Goiiz_Crawler
             {
                 pic[0] = dom.Select("img[itemprop]")[0]["data-frz-src"].Split('?')[0];
             }
-            string path = dom.Select(".related-categories>ul").Text().Trim();
+            string path = Regex.Replace(dom.Select(".related-categories>ul").Text(), @"\s+", String.Empty).Trim();
             return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,case1,case2,{7}", title, description, preferPrice, orgPrice,
                 content, string.Join(" ,", contentPic), string.Join(" ,", pic), path) + Environment.NewLine;
         }
