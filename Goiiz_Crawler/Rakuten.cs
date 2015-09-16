@@ -1,4 +1,5 @@
 ﻿using CsQuery;
+using Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,26 @@ namespace Goiiz_Crawler
             return itemUrls;
         }
 
+        private string findClassId(string[] classes)
+        {
+            foreach (var worksheet in Workbook.Worksheets(Environment.CurrentDirectory + "\\data.xlsx"))
+            {
+                foreach (var row in worksheet.Rows)
+                {
+                    foreach (var cell in row.Cells)
+                    {
+                        if (cell.Text == row.Cells[5].Text) return ",";
+                        if (cell.Text == null) continue;
+                        foreach (string path in classes)
+                        {
+                            if (cell.Text == path) return row.Cells[6].Text + "," + row.Cells[8].Text;
+                        }
+                    }
+                }
+            }
+            return ",";
+        }
+
         public string getSinglePage(string url)
         {
             CQ dom = spwc.DownloadString(url, Encoding.UTF8);
@@ -93,9 +114,9 @@ namespace Goiiz_Crawler
             {
                 pic[0] = dom.Select("img[itemprop]")[0]["data-frz-src"].Split('?')[0];
             }
-            string path = Regex.Replace(dom.Select(".related-categories>ul").Text(), @"\s+", String.Empty).Trim();
-            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,case1,case2,{7}", title, description, preferPrice, orgPrice,
-                content, string.Join(" ,", contentPic), string.Join(" ,", pic), path) + Environment.NewLine;
+            string[] path = Regex.Split(dom.Select(".related-categories>ul").Text(), @"\s+");
+            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,{7},{8}", title, description, preferPrice, orgPrice,
+                content, string.Join(" ,", contentPic), string.Join(" ,", pic), findClassId(path), string.Join(" ", path)) + Environment.NewLine;
         }
 
     }

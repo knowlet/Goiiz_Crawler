@@ -1,4 +1,5 @@
 ﻿using CsQuery;
+using Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,6 +60,32 @@ namespace Goiiz_Crawler
             return itemUrls;
         }
 
+        private string findClassId(string[] classes)
+        {
+            foreach (var worksheet in Workbook.Worksheets(Environment.CurrentDirectory + "\\data.xlsx"))
+            {
+                foreach (var row in worksheet.Rows)
+                {
+                    if (row.Cells[0].Text == classes[0])
+                    {
+                        foreach (var cell in row.Cells)
+                        {
+                            if (cell.Text == row.Cells[5].Text) return ",";
+                            if (cell.Text == null) continue;
+                            foreach (string class2 in classes)
+                            {
+                                if (cell.Text == class2)
+                                {
+                                    return row.Cells[6].Text + "," + row.Cells[8].Text;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ",";
+        }
+
         public string getSinglePage(string url)
         {
             CQ dom = spwc.DownloadString(url, Encoding.UTF8);
@@ -88,8 +115,8 @@ namespace Goiiz_Crawler
                     path += ">" + System.Net.WebUtility.HtmlDecode(e.PreviousElementSibling.ChildNodes[0].InnerText);
             });
             path += ">" + dom.Select(".slectit").Text().Trim();
-            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,case1,case2,{7}", title, description, preferPrice, orgPrice,
-                content, string.Join(" ,", contentPic), pic, path) + Environment.NewLine;
+            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,{7},{8}", title, description, preferPrice, orgPrice,
+                content, string.Join(" ,", contentPic), pic, findClassId(path.Split('>')), path) + Environment.NewLine;
         }
 
     }
