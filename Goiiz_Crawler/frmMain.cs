@@ -72,6 +72,7 @@ namespace Goiiz_Crawler
                     foreach (string u in urls)
                     {
                         // txtShow.AppendText(u + Environment.NewLine);
+                        Application.DoEvents();
                         File.AppendAllText(path, bot.getSinglePage("http://www.rakuten.com.tw" + u), Encoding.UTF8);
                         ++pgbShow.Value;
                     }
@@ -101,6 +102,7 @@ namespace Goiiz_Crawler
                     foreach (string u in urls)
                     {
                         // txtShow.AppendText(u + Environment.NewLine);
+                        Application.DoEvents();
                         File.AppendAllText(path, bot.getSinglePage(u), Encoding.UTF8);
                         ++pgbShow.Value;
                     }
