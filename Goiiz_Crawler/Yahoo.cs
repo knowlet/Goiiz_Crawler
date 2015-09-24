@@ -115,8 +115,8 @@ namespace Goiiz_Crawler
                     path += ">" + System.Net.WebUtility.HtmlDecode(e.PreviousElementSibling.ChildNodes[0].InnerText);
             });
             path += ">" + dom.Select(".slectit").Text().Trim();
-            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,{7},{8}", title, description, preferPrice, orgPrice,
-                content, string.Join(" ,", contentPic), pic, findClassId(path.Split('>')), path) + Environment.NewLine;
+            return String.Format("{0},\"{1}\",\"{2}\",{3},{4},\"{5}\",{6} ,{7} ,,,,,{8}", path, title, description, preferPrice, orgPrice,
+                content, string.Join(" ,", contentPic), pic, findClassId(path.Split('>'))) + Environment.NewLine;
         }
 
     }

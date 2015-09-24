@@ -11,7 +11,7 @@ namespace Goiiz_Crawler
     {
         string PATH = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Documents\\Goiiz\\";
         Regex regPCStore = new Regex(@"^https?://www\.pcstore\.com\.tw/(\w+)");
-        Regex regRakuten = new Regex(@"^https?://www\.rakuten\.com\.tw/shop/(\w+)");
+        Regex regRakuten = new Regex(@"^https?://www\.rakuten\.com\.tw/shop/([^\/]+)");
         Regex regYahooMall = new Regex(@"^https?://tw\.mall\.yahoo\.com/store/(\w+)");
 
         public frmMain()

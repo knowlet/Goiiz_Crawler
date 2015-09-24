@@ -105,8 +105,8 @@ namespace Goiiz_Crawler
             string pic = dom.Select("img[name='b_img_t']")[0]["src"];
             string path = Regex.Replace(dom.Select(".topbar_bg+tr>td[height]").Text(), @"\s+", String.Empty);
             string[] classes = path.Split('>');
-            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,,,,,{7},{8}", title, description, preferPrice, orgPrice,
-                content, string.Join(" ,", contentPic), pic, findClassId(classes[2].Trim(), classes[4].Trim()),path) + Environment.NewLine;
+            return String.Format("{0},\"{1}\",\"{2}\",{3},{4},\"{5}\",{6} ,{7} ,,,,,{8}", path, title, description, preferPrice, orgPrice,
+                content, string.Join(" ,", contentPic), pic, findClassId(classes[2].Trim(), classes[4].Trim())) + Environment.NewLine;
         }
 
 

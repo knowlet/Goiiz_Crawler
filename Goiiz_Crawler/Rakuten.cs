@@ -115,8 +115,8 @@ namespace Goiiz_Crawler
                 pic[0] = dom.Select("img[itemprop]")[0]["data-frz-src"].Split('?')[0];
             }
             string[] path = Regex.Split(dom.Select(".related-categories>ul").Text(), @"\s+");
-            return String.Format("\"{0}\",\"{1}\",{2},{3},\"{4}\",{5} ,{6} ,{7},{8}", title, description, preferPrice, orgPrice,
-                content, string.Join(" ,", contentPic), string.Join(" ,", pic), findClassId(path), string.Join(" ", path)) + Environment.NewLine;
+            return String.Format("{0},\"{1}\",\"{2}\",{3},{4},\"{5}\",{6} ,{7} ,{8}", string.Join(" ", path), title, description, preferPrice, orgPrice,
+                content, string.Join(" ,", contentPic), string.Join(" ,", pic), findClassId(path)) + Environment.NewLine;
         }
 
     }
