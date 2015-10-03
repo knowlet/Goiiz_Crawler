@@ -16,7 +16,6 @@ namespace Goiiz_Crawler
         private SpWebClient spwc;
         private string id;
         private string listUrl;
-        private List<string> itemUrls;
         public int itemNum;
 
         public Yahoo(string id)
@@ -26,7 +25,6 @@ namespace Goiiz_Crawler
             this.spwc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
             this.id = id;
             this.listUrl = String.Format("https://tw.mall.yahoo.com/search?m=list&sid={0}&s=-createtime&view=both", id);
-            this.itemUrls = new List<string>();
         }
 
         public bool Init()
@@ -44,20 +42,17 @@ namespace Goiiz_Crawler
             }
         }
 
-        public List<string> getItemUrlsList()
+        public bool getItemUrlsList(int i, List<string> itemUrls)
         {
-            for (int i = 0; i <= this.itemNum; i += 48)
-            {
-                CQ dom = spwc.DownloadString(this.listUrl + "&b=" + i.ToString(), Encoding.UTF8);
-                // 超過三萬件商品可能會有空白資料的情況
-                if (i > 29952 && dom.Select("p>strong").Text().Trim() == "0") break;
-                CQ proHrefs = dom.Select("td.title>a");
-                proHrefs.Each((idx, a) => {
-                    this.itemUrls.Add(a["href"]);
-                });
-                Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
-            }
-            return itemUrls;
+            CQ dom = spwc.DownloadString(this.listUrl + "&b=" + i.ToString(), Encoding.UTF8);
+            // 超過三萬件商品可能會有空白資料的情況
+            if (i > 29952 && dom.Select("p>strong").Text().Trim() == "0") return false;
+            CQ proHrefs = dom.Select("td.title>a");
+            proHrefs.Each((idx, a) => {
+                itemUrls.Add(a["href"]);
+            });
+            Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
+            return true;
         }
 
         private string findClassId(string[] classes)
@@ -115,7 +110,7 @@ namespace Goiiz_Crawler
                     path += ">" + System.Net.WebUtility.HtmlDecode(e.PreviousElementSibling.ChildNodes[0].InnerText);
             });
             path += ">" + dom.Select(".slectit").Text().Trim();
-            return String.Format("{0},\"{1}\",\"{2}\",{3},{4},\"{5}\",{6} ,{7} ,,,,,{8}", path, title, description, preferPrice, orgPrice,
+            return string.Format("{0},\"{1}\",\"{2}\",{3},{4},\"{5}\",{6} ,{7} ,,,,,{8}", path, title, description, preferPrice, orgPrice,
                 content, string.Join(" ,", contentPic), pic, findClassId(path.Split('>'))) + Environment.NewLine;
         }
 

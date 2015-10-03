@@ -17,7 +17,6 @@ namespace Goiiz_Crawler
         private SpWebClient spwc;
         private string id;
         private string listUrl;
-        private List<string> itemUrls;
         public int pageNum;
         public int itemNum;
 
@@ -30,7 +29,6 @@ namespace Goiiz_Crawler
             this.listUrl = String.Format("http://www.pcstore.com.tw/{0}/HM/search.htm", id);
             this.cc.Add(new Cookie("pagecountBycookie", "40") { Domain = ".www.pcstore.com.tw" });
             this.cc.Add(new Cookie("brwsckidsn", "KNOWLET_MAGIC") { Domain = ".pcstore.com.tw" });
-            this.itemUrls = new List<string>();
         }
 
         public bool Init()
@@ -50,20 +48,16 @@ namespace Goiiz_Crawler
             }
         }
 
-        public List<string> getItemUrlsList()
+        public void getItemUrlsList(int i, List<string> itemUrls)
         {
-            for (int i = 1; i <= this.pageNum; ++i)
-            {
-                CQ dom = spwc.DownloadString(this.listUrl + "?st_sort=2&s_page=" + i.ToString());
-                CQ proHrefs = dom.Select(".list_proName>a");
-                proHrefs.Each((idx, a) => {
-                    this.itemUrls.Add(a["href"]);
-                });
-                Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
-            }
-            return itemUrls;
+            CQ dom = spwc.DownloadString(this.listUrl + "?st_sort=2&s_page=" + i.ToString());
+            CQ proHrefs = dom.Select(".list_proName>a");
+            proHrefs.Each((idx, a) => {
+                itemUrls.Add(a["href"]);
+            });
+            Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
         }
-        
+
         private string findClassId(string class1, string class2)
         {
             foreach (var worksheet in Workbook.Worksheets(Environment.CurrentDirectory + "\\data.xlsx"))
@@ -76,7 +70,7 @@ namespace Goiiz_Crawler
                         {
                             if (cell.Text == row.Cells[5].Text) return ",";
                             if (cell.Text == null) continue;
-                            if (cell.Text== class2)
+                            if (cell.Text == class2)
                             {
                                 return row.Cells[6].Text + "," + row.Cells[8].Text;
                             }
@@ -107,7 +101,7 @@ namespace Goiiz_Crawler
             string content = dom.Select("tr[style^='FONT']").First().Text().Trim().Replace("\"", "\"\""); ;
             if (content.Length > 500) content = content.Substring(0, 500);
             string[] contentPic = new string[3];
-            dom.Select("tr[style^='FONT'] img").Each((i,e) => {
+            dom.Select("tr[style^='FONT'] img").Each((i, e) => {
                 if (i < 3)
                     contentPic[i] = e["src"];
             });

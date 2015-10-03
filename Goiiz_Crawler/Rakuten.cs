@@ -17,10 +17,9 @@ namespace Goiiz_Crawler
         private SpWebClient spwc;
         private string id;
         private string listUrl;
-        private List<string> itemUrls;
         public int pageNum;
         public double itemNum;
-        
+
         public Rakuten(string id)
         {
             this.cc = new CookieContainer();
@@ -28,7 +27,6 @@ namespace Goiiz_Crawler
             this.spwc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
             this.id = id;
             this.listUrl = String.Format("http://www.rakuten.com.tw/shop/{0}/products/", id);
-            this.itemUrls = new List<string>();
         }
 
         public bool Init()
@@ -37,9 +35,9 @@ namespace Goiiz_Crawler
             CQ dom = spwc.DownloadString(listUrl, Encoding.UTF8);
             try
             {
-            string item = dom.Select(".b-tabs-utility").Text();
-            this.itemNum = Double.Parse(regPageNum.Match(item).Groups[1].Value);
-            this.pageNum = Convert.ToInt32(Math.Ceiling(itemNum / 60));
+                string item = dom.Select(".b-tabs-utility").Text();
+                this.itemNum = Double.Parse(regPageNum.Match(item).Groups[1].Value);
+                this.pageNum = Convert.ToInt32(Math.Ceiling(itemNum / 60));
                 return true;
             }
             catch (Exception)
@@ -48,20 +46,14 @@ namespace Goiiz_Crawler
             }
         }
 
-        public List<string> getItemUrlsList()
+        public void getItemUrlsList(int i, List<string> itemUrls)
         {
-            for (int i = 1; i <= this.pageNum; ++i)
-            {
-                CQ dom = spwc.DownloadString(this.listUrl + "?h=3&v=l&p=" + i.ToString(), Encoding.UTF8);
-                CQ proHrefs = dom.Select(".b-item .b-text b>a");
-                proHrefs.Each((idx, a) => {
-                    this.itemUrls.Add(a["href"]);
-                });
-                Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
-                Thread.Sleep(1000);
-                Console.WriteLine("Wait 1 sec.");
-            }
-            return itemUrls;
+            CQ dom = spwc.DownloadString(this.listUrl + "?h=3&v=l&p=" + i.ToString(), Encoding.UTF8);
+            CQ proHrefs = dom.Select(".b-item .b-text b>a");
+            proHrefs.Each((idx, a) => {
+                itemUrls.Add(a["href"]);
+            });
+            Console.WriteLine("page " + i + "; items: " + proHrefs.Length);
         }
 
         private string findClassId(string[] classes)
