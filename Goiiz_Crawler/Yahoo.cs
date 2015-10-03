@@ -89,11 +89,11 @@ namespace Goiiz_Crawler
             int preferPrice = Int32.Parse(dom.Select("span.price:first").Text().Replace("元", String.Empty));
             string orgPriceStr = "";
             CQ tmp = dom.Select("del");
-            if (tmp != null) orgPriceStr = tmp.Text().Replace("元", String.Empty);
+            if (tmp != null) orgPriceStr = Regex.Match(tmp.Text(), "^\\d+").Value;
             else
             {
                 tmp = dom.Select(".has_promo_price");
-                if (tmp != null) orgPriceStr = tmp.Text().Replace("元", String.Empty);
+                if (tmp != null) orgPriceStr = Regex.Match(tmp.Text(), "^\\d+").Value;
             }
             int orgPrice = orgPriceStr != "" ? Int32.Parse(orgPriceStr) : preferPrice;
             string content = dom.Select("#ypsudes div.ins").Text().Trim().Replace("\"", "\"\"");
