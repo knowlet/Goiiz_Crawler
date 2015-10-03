@@ -32,6 +32,7 @@
             this.btnStart = new System.Windows.Forms.Button();
             this.txtShow = new System.Windows.Forms.TextBox();
             this.pgbShow = new System.Windows.Forms.ProgressBar();
+            this.bgwk = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // txtUrl
@@ -78,6 +79,13 @@
             this.pgbShow.Size = new System.Drawing.Size(260, 23);
             this.pgbShow.TabIndex = 3;
             // 
+            // bgwk
+            // 
+            this.bgwk.WorkerReportsProgress = true;
+            this.bgwk.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwk_DoWork);
+            this.bgwk.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwk_ProgressChanged);
+            this.bgwk.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwk_RunWorkerCompleted);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -100,6 +108,7 @@
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.TextBox txtShow;
         private System.Windows.Forms.ProgressBar pgbShow;
+        private System.ComponentModel.BackgroundWorker bgwk;
     }
 }
 
