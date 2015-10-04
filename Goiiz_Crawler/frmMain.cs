@@ -33,6 +33,7 @@ namespace Goiiz_Crawler
             {
                 try
                 {
+                    pgbShow.Value = 0;
                     bgwk.RunWorkerAsync();
                 }
                 catch (Exception ex)
@@ -82,7 +83,6 @@ namespace Goiiz_Crawler
         {
             string url = txtUrl.Text;
             List<string> urls = new List<string>();
-            pgbShow.Value = 0;
             if (regPCStore.IsMatch(url))
             {
                 string id = regPCStore.Match(url).Groups[1].Value;
