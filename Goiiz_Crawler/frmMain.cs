@@ -109,8 +109,9 @@ namespace Goiiz_Crawler
                         if (pgbShow.Value < pgbShow.Maximum) bgwk.ReportProgress(pgbShow.Value + 1);
                         if (pgbShow.Value > 1000 && pgbShow.Value % 1000 == 0)
                         {
-                            log("休息一下，還有 " + (bot.itemNum - pgbShow.Value).ToString() + "筆資料.. ");
-                            Thread.Sleep(5000 + rand.Next() % 5000);
+                            int delay = 300000 + rand.Next() % 15000;
+                            log("休息" + (delay / 1000) + "秒，還有 " + (bot.itemNum - pgbShow.Value).ToString() + "筆資料.. ");
+                            Thread.Sleep(delay);
                             log("繼續下載");
                         }
                     }
@@ -210,7 +211,8 @@ namespace Goiiz_Crawler
 
         private void bgwk_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            if (e.Error != null)
+                log("下載失敗，錯誤訊息：" + e.Error + Environment.NewLine);
         }
     }
 }
